@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta-Analytica: Research Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .view-content { display: none; }
+        .view-active { display: block !important; }
+        .tab-btn { transition: all 0.2s; border-bottom: 4px solid transparent; }
+        .tab-active { border-bottom: 4px solid #f59e0b; color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+
+<nav class="bg-blue-900 text-white shadow-xl p-4">
+    <div class="max-w-7xl mx-auto flex gap-6">
+        <button onclick="switchTab('edu')" id="btn-edu" class="tab-btn font-bold tab-active">Education</button>
+        <button onclick="switchTab('tool')" id="btn-tool" class="tab-btn font-bold">Analysis Tool</button>
+        <button onclick="switchTab('prisma')" id="btn-prisma" class="tab-btn font-bold">PRISMA Flow</button>
+        <button onclick="switchTab('art')" id="btn-art" class="tab-btn font-bold">Generate Article</button>
+    </div>
+</nav>
+
+<div id="view-edu" class="view-content view-active p-8"><h2 class="text-2xl">Education Module</h2></div>
+<div id="view-tool" class="view-content p-8"><h2 class="text-2xl">Analysis Tool Module</h2></div>
+<div id="view-prisma" class="view-content p-8">
+    <h2 class="text-2xl font-bold mb-6">PRISMA 2020 Study Manager</h2>
+    <div class="bg-white p-6 rounded-xl shadow mb-8">
+        <table class="w-full border-collapse">
+            <thead><tr class="text-left border-b"><th class="p-2">Study</th><th class="p-2">Status</th></tr></thead>
+            <tbody id="prisma-table"></tbody>
+        </table>
+    </div>
+</div>
+<div id="view-art" class="view-content p-8"><h2 class="text-2xl">Article Generator</h2></div>
+
+<script>
+    let studies = [
+        { id: 1, title: 'Smith et al., 2023', status: 'Included' },
+        { id: 2, title: 'Jones et al., 2022', status: 'Excluded' }
+    ];
+
+    function switchTab(id) {
+        // Safe access: Get elements only when function is triggered
+        const targetView = document.getElementById('view-' + id);
+        const targetBtn = document.getElementById('btn-' + id);
+        
+        // Defensive check: If elements aren't ready, exit silently
+        if (!targetView || !targetBtn) return;
+
+        // Hide all views
+        document.querySelectorAll('.view-content').forEach(el => el.classList.remove('view-active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
+
+        // Show selected
+        targetView.classList.add('view-active');
+        targetBtn.classList.add('tab-active');
+
+        // Only run PRISMA render if the specific view is active
+        if (id === 'prisma') renderPrisma();
+    }
+
+    function renderPrisma() {
+        const tbody = document.getElementById('prisma-table');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        studies.forEach(s => {
+            tbody.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-2">${s.title}</td>
+                    <td class="p-2">${s.status}</td>
+                </tr>`;
+        });
+    }
+</script>
+</body>
+</html>
